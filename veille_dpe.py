@@ -183,10 +183,10 @@ def fiche_html(f):
         if f.get(k):
             details.append(e(str(f[k])))
     couleur_v = {"Vente": "#0b6e4f", "Loca": "#1f4e9c"}.get(f["verdict"][:4], "#666")
-    boutons = [f'<a href="{l["maps"]}" style="{BTN}">📍 Google Maps</a>']
+    boutons = [f'<a href="{l["maps"]}" style="{BTN}">Google Maps</a>']
     if l.get("streetview"):
-        boutons.append(f'<a href="{l["streetview"]}" style="{BTN}">👁 Street View</a>')
-    boutons.append(f'<a href="{l["ademe"]}" style="{BTN}">📄 Fiche ADEME</a>')
+        boutons.append(f'<a href="{l["streetview"]}" style="{BTN}">Street View</a>')
+    boutons.append(f'<a href="{l["ademe"]}" style="{BTN}">Fiche ADEME</a>')
     return f"""
 <div class="fiche" data-commune="{e(f.get('nom_commune_ban') or '')}" data-verdict="{e(f['verdict'])}"
  style="border:1px solid #ddd;border-radius:10px;padding:14px 16px;margin:0 0 14px;background:#fff;color:#222">
@@ -205,14 +205,14 @@ def fiche_html(f):
       <td style="padding:2px 12px 2px 24px;color:#777">Valable</td><td>jusqu'au {fmt_date(f.get('date_fin_validite_dpe'))}</td></tr>
  </table>
  <div style="margin:8px 0;padding:8px 10px;border-radius:6px;background:#f4f6f8">
-  <b style="color:{couleur_v}">🔎 {e(f['verdict'])}</b> <span style="font-size:12px;color:#777">(confiance {f['confiance']})</span>
+  <b style="color:{couleur_v}">{e(f['verdict'])}</b> <span style="font-size:12px;color:#777">(confiance {f['confiance']})</span>
   <div style="font-size:12px;color:#555;margin-top:3px">{'<br>'.join('• ' + e(r) for r in f['raisons']) or '• Pas assez d’indices'}</div>
  </div>
  <div>{' '.join(boutons)}</div>
 </div>"""
 
 
-BTN = ("display:inline-block;margin:4px 6px 0 0;padding:6px 10px;border-radius:6px;background:#1a3d6d;"
+BTN = ("display:inline-block;margin:4px 6px 0 0;padding:6px 10px;border-radius:99px;background:#111;"
        "color:#fff;text-decoration:none;font-size:13px")
 
 
@@ -221,39 +221,152 @@ def mail_html(fiches, communes):
     for f in fiches:
         par_commune.setdefault(f.get("nom_commune_ban") or "?", []).append(f)
     corps = "".join(
-        f'<h3 style="margin:22px 0 8px;color:#1a3d6d">{html.escape(c)} ({len(l)})</h3>' + "".join(fiche_html(f) for f in l)
+        f'<h3 style="margin:22px 0 8px;color:#111">{html.escape(c)} ({len(l)})</h3>' + "".join(fiche_html(f) for f in l)
         for c, l in sorted(par_commune.items(), key=lambda x: -len(x[1])))
-    return f"""<html><body style="font-family:Arial,sans-serif;background:#f0f2f5;padding:16px;margin:0">
+    return f"""<html><body style="font-family:Poppins,Arial,sans-serif;background:#f6f5f1;padding:16px;margin:0;color:#333">
 <div style="max-width:680px;margin:auto">
-<h2 style="color:#1a3d6d;margin:0 0 4px">🏠 {len(fiches)} nouveau(x) DPE sur votre secteur</h2>
+<h2 style="color:#111;font-weight:500;margin:0 0 4px">{len(fiches)} nouveau(x) DPE sur votre secteur</h2>
 <div style="font-size:13px;color:#666;margin-bottom:10px">{', '.join(communes)} · {date.today().strftime('%d/%m/%Y')}</div>
 {corps}
 <div style="font-size:11px;color:#999;margin-top:20px">Source : ADEME open data (DPE logements existants). L'estimation vente / location est un indice, pas une certitude.</div>
 </div></body></html>"""
 
 
+LOGO_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="{w}" height="{w}" aria-hidden="true">
+<g>{fleches}</g>
+<path d="M3 37 L19 23 L35 37 Z" fill="#3f9d3a" stroke="#2c7428" stroke-width="1.2" stroke-linejoin="round"/>
+<rect x="25" y="25" width="3.5" height="6" fill="#2c7428"/>
+<path d="M14.5 29 L23.5 29 L27 33 L18 33 Z" fill="#2f4fa0" stroke="#fff" stroke-width=".5"/>
+<rect x="6.5" y="36" width="25" height="21" fill="#f7f7f4" stroke="#2a2a2a" stroke-width="1.3"/>
+<rect x="10" y="40" width="5" height="5" fill="#2a2a2a"/><rect x="23" y="40" width="5" height="5" fill="#2a2a2a"/>
+<rect x="16.5" y="47" width="5" height="10" fill="#2a2a2a"/>
+<rect x="5" y="56.5" width="28" height="2.5" fill="#2a2a2a"/>
+</svg>"""
+
+
+def logo(w=36):
+    lettres = "ABCDEFG"
+    fl = []
+    for i, l in enumerate(lettres):
+        y, larg = 5 + i * 7.4, 13 + i * 2.6
+        x0, x1 = 34, 34 + larg
+        fl.append(f'<path d="M{x0} {y} H{x1} L{x1 + 3.4} {y + 3.2} L{x1} {y + 6.4} H{x0} Z" fill="{COULEURS[l]}"/>'
+                  f'<text x="{x1 - 1.2}" y="{y + 5.2}" font-size="5.4" font-family="Arial" font-weight="700" '
+                  f'text-anchor="end" fill="#fff">{l}</text>')
+    return LOGO_SVG.format(w=w, fleches="".join(fl))
+
+
+PAGE_CSS = """
+:root{--black:#111;--ink:#333;--muted:#777;--line:#e8e4da;--bg:#f6f5f1;--card:#fff;--soft:#f6f3ea;
+ --gold:#a6955c;--gold-3:#cabf9d;--head:#111;--vente:#4f8a3a;--loc:#3b82c4;--soc:#8a5cc4;--indec:#a0a0a0}
+:root[data-theme=dark]{--ink:#e6e3dc;--muted:#9a968c;--line:#2d2b27;--bg:#121211;--card:#1b1a18;--soft:#24221e;
+ --gold:#c2b07a;--head:#0a0a09;--vente:#7fb76a;--loc:#6fa7dc;--soc:#ad8ee0;--indec:#8a8a8a}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#e6e3dc;--muted:#9a968c;--line:#2d2b27;
+ --bg:#121211;--card:#1b1a18;--soft:#24221e;--gold:#c2b07a;--head:#0a0a09;--vente:#7fb76a;--loc:#6fa7dc;--soc:#ad8ee0;--indec:#8a8a8a}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+header{background:var(--head);color:#fff;position:sticky;top:0;z-index:10}
+header .in{max-width:1100px;margin:auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+header .lg{background:#fff;border-radius:10px;padding:3px;display:flex}
+header h1{font-size:16px;font-weight:500;line-height:1.2}header small{color:var(--gold-3);font-size:12px}
+header .sp{flex:1}
+.theme{background:transparent;border:1px solid #444;color:#fff;border-radius:99px;padding:6px 12px;cursor:pointer;font:inherit;font-size:12px}
+main{max-width:1100px;margin:auto;padding:18px 16px 40px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.stat b{display:block;font-size:20px;font-weight:600}.stat span{color:var(--muted);font-size:12px}
+.filtres{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.input{padding:9px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+.input:focus{outline:none;border-color:var(--gold)}#q{flex:1;min-width:160px}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.fiche{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.fiche .top{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)}
+.fiche h2{font-size:15px;font-weight:500;line-height:1.35}.fiche .det{font-size:12px;color:var(--muted)}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 10px;border-radius:99px;color:#fff;white-space:nowrap}
+.kv{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 10px;font-size:13px}.kv dt{color:var(--muted)}
+.et{display:inline-block;min-width:22px;text-align:center;font-weight:600;font-size:12px;border-radius:4px;padding:0 6px;color:#fff}
+.why{background:var(--soft);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--muted)}
+.why b{color:var(--ink);font-weight:500}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.btn{border-radius:99px;padding:6px 12px;font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--line);color:var(--ink);background:var(--card)}
+.btn:hover{border-color:var(--gold)}.btn-dark{background:var(--black);color:#fff;border-color:var(--black)}
+:root[data-theme=dark] .btn-dark{background:var(--gold);border-color:var(--gold);color:#111}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .btn-dark{background:var(--gold);border-color:var(--gold);color:#111}}
+.vide{color:var(--muted);text-align:center;padding:40px;display:none}
+@media (max-width:480px){.grille{grid-template-columns:1fr}.kv{grid-template-columns:auto 1fr}header small{display:none}}
+"""
+
+COUL_VERDICT = {"Vente probable": "var(--vente)", "Location probable": "var(--loc)",
+                "Location (logement social)": "var(--soc)", "Indécis": "var(--indec)"}
+
+
+def fiche_page(f):
+    e = html.escape
+    l = f["liens"]
+    s = f.get("surface_habitable_logement")
+    det = []
+    if f.get("type_batiment") == "appartement" and f.get("numero_etage_appartement") is not None:
+        det.append(f"Étage {f['numero_etage_appartement']}")
+    det += [e(str(f[k])) for k in ("nom_residence", "complement_adresse_batiment", "complement_adresse_logement") if f.get(k)]
+    et = lambda x: (f'<span class="et" style="background:{COULEURS.get(x, "#999")};'
+                    f'{"color:#111" if x in "CDE" else ""}">{x}</span>') if x else "?"
+    btns = [f'<a class="btn btn-dark" href="{l["maps"]}" target="_blank">Google Maps</a>']
+    if l.get("streetview"):
+        btns.append(f'<a class="btn" href="{l["streetview"]}" target="_blank">Street View</a>')
+    btns.append(f'<a class="btn" href="{l["ademe"]}" target="_blank">Fiche ADEME</a>')
+    return f"""<article class="fiche" data-commune="{e(f.get('nom_commune_ban') or '')}" data-verdict="{e(f['verdict'])}">
+<div class="top"><span>N° {e(f['numero_dpe'])} · reçu le {fmt_date(f.get('date_reception_dpe'))}</span>
+<span class="tag" style="background:{COUL_VERDICT.get(f['verdict'], 'var(--indec)')}">{e(f['verdict'])}</span></div>
+<div><h2>{e(f.get('adresse_ban') or '?')}</h2><div class="det">{' · '.join(det)}</div></div>
+<dl class="kv"><dt>Type</dt><dd>{e((f.get('type_batiment') or '?').capitalize())}</dd>
+<dt>Surface</dt><dd>{f'{s:.1f} m²' if s else '?'}</dd>
+<dt>Année</dt><dd>{e(str(f.get('annee_construction') or f.get('periode_construction') or '?'))}</dd>
+<dt>DPE/GES</dt><dd>{et(f.get('etiquette_dpe'))} {et(f.get('etiquette_ges'))}</dd>
+<dt>Conso</dt><dd>{f.get('conso_5_usages_par_m2_ep') or '?'} kWh/m²</dd>
+<dt>Établi</dt><dd>{fmt_date(f.get('date_etablissement_dpe'))}</dd></dl>
+<div class="det">Chauffage : {e(f.get('type_generateur_chauffage_principal') or f.get('type_energie_principale_chauffage') or '?')}</div>
+<div class="why"><b>Pourquoi ?</b> (confiance {f['confiance']}) — {' · '.join(e(r) for r in f['raisons']) or 'pas assez d’indices'}</div>
+<div class="acts">{''.join(btns)}</div></article>"""
+
+
 def page_html(fiches, communes):
     options = "".join(f"<option>{html.escape(c)}</option>" for c in communes)
-    cartes = "".join(fiche_html(f) for f in fiches)
-    maj = datetime.now().strftime("%d/%m/%Y %H:%M")
+    cartes = "".join(fiche_page(f) for f in fiches)
+    maj = datetime.now().strftime("%d/%m/%Y à %H:%M")
+    il_y_a_7j = (date.today() - timedelta(days=7)).isoformat()
+    n7 = sum(1 for f in fiches if (f.get("date_reception_dpe") or "") >= il_y_a_7j)
+    nv = sum(1 for f in fiches if f["verdict"] == "Vente probable")
+    nl = sum(1 for f in fiches if f["verdict"].startswith("Location"))
+    favicon = "data:image/svg+xml," + urllib.parse.quote(logo(64))
     return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<title>Veille DPE secteur</title></head>
-<body style="font-family:Arial,sans-serif;background:#f0f2f5;margin:0;padding:16px">
-<div style="max-width:720px;margin:auto">
-<h1 style="color:#1a3d6d;font-size:22px;margin:0">🏠 Veille DPE – secteur Monteux</h1>
-<div style="font-size:13px;color:#666;margin:4px 0 12px">{len(fiches)} DPE · mise à jour {maj}</div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
- <select id="c" style="padding:6px"><option value="">Toutes les communes</option>{options}</select>
- <select id="v" style="padding:6px"><option value="">Vente + location</option><option>Vente probable</option>
-  <option>Location probable</option><option>Location (logement social)</option><option>Indécis</option></select>
- <input id="q" placeholder="Rechercher une rue…" style="padding:6px;flex:1;min-width:140px">
-</div>
-<div id="liste">{cartes}</div></div>
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Veille DPE – Hugo LALANDE</title><link rel="icon" href="{favicon}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>try{{const t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
+<style>{PAGE_CSS}</style></head><body>
+<header><div class="in"><span class="lg">{logo(34)}</span>
+<div><h1>Veille DPE</h1><small>Hugo LALANDE · Saint-Michel Immobilier Monteux</small></div>
+<span class="sp"></span><button class="theme" id="t">◐ Thème</button></div></header>
+<main>
+<div class="stats"><div class="stat"><b>{len(fiches)}</b><span>DPE suivis</span></div>
+<div class="stat"><b>{n7}</b><span>reçus ces 7 jours</span></div>
+<div class="stat"><b>{nv}</b><span>ventes probables</span></div>
+<div class="stat"><b>{nl}</b><span>locations probables</span></div></div>
+<div class="filtres"><select id="c" class="input"><option value="">Toutes les communes</option>{options}</select>
+<select id="v" class="input"><option value="">Tous les verdicts</option><option>Vente probable</option>
+<option>Location probable</option><option>Location (logement social)</option><option>Indécis</option></select>
+<input id="q" class="input" placeholder="Rechercher une rue, une résidence…"></div>
+<div class="grille" id="liste">{cartes}</div><p class="vide" id="vide">Aucun DPE pour ces filtres.</p>
+<p style="color:var(--muted);font-size:11px;margin-top:24px">Mise à jour le {maj} · Source : open data ADEME.
+Le verdict vente / location est une estimation.</p></main>
 <script>
-const f=()=>{{const c=document.getElementById('c').value,v=document.getElementById('v').value,q=document.getElementById('q').value.toLowerCase();
-document.querySelectorAll('.fiche').forEach(e=>{{e.style.display=(!c||e.dataset.commune===c)&&(!v||e.dataset.verdict===v)&&(!q||e.textContent.toLowerCase().includes(q))?'':'none'}})}};
-['c','v','q'].forEach(i=>document.getElementById(i).addEventListener('input',f));
+const $=i=>document.getElementById(i);
+const f=()=>{{const c=$('c').value,v=$('v').value,q=$('q').value.toLowerCase();let n=0;
+document.querySelectorAll('.fiche').forEach(e=>{{const ok=(!c||e.dataset.commune===c)&&(!v||e.dataset.verdict===v)&&(!q||e.textContent.toLowerCase().includes(q));e.style.display=ok?'':'none';n+=ok}});
+$('vide').style.display=n?'none':'block'}};
+['c','v','q'].forEach(i=>$(i).addEventListener('input',f));
+$('t').onclick=()=>{{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+r.dataset.theme=dark?'light':'dark';try{{localStorage.setItem('theme',r.dataset.theme)}}catch(e){{}}}};
 </script></body></html>"""
 
 
@@ -304,12 +417,13 @@ def main():
     ecrire_json(DATA / "historique.json", tous)
     DOCS.mkdir(exist_ok=True)
     (DOCS / "index.html").write_text(page_html(fiches, communes.values()), encoding="utf-8")
+    ecrire_json(DOCS / "dpe.json", fiches)  # flux réutilisable (CRM, etc.)
 
     if "--apercu" in args:
         (ROOT / "apercu_mail.html").write_text(mail_html(nouvelles, communes.values()), encoding="utf-8")
         print("Aperçu écrit dans apercu_mail.html")
     elif nouvelles and "--no-mail" not in args and not premier_run:
-        envoyer_mail(f"🏠 {len(nouvelles)} nouveau(x) DPE – secteur Monteux", mail_html(nouvelles, communes.values()))
+        envoyer_mail(f"{len(nouvelles)} nouveau(x) DPE – secteur Monteux", mail_html(nouvelles, communes.values()))
 
 
 if __name__ == "__main__":
