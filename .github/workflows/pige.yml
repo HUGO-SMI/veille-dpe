@@ -1,0 +1,36 @@
+name: Pige immobilière
+
+on:
+  schedule:
+    - cron: "17 5-20 * * *"   # toutes les heures de 6h à 21h (heure de Paris en hiver)
+  workflow_dispatch: {}        # bouton "Run workflow" pour lancer à la main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: depot-veille
+  cancel-in-progress: false
+
+jobs:
+  pige:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Lire les alertes mail (SeLoger, Bien'ici, LeBonCoin)
+        env:
+          IMAP_USER: ${{ secrets.IMAP_USER }}
+          IMAP_PASS: ${{ secrets.IMAP_PASS }}
+        run: python pige.py
+      - name: Publier la pige
+        run: |
+          git config user.name "pige-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/pige.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Pas de changement"; exit 0; fi
+          git commit -m "Pige $(date +'%F %H:%M')"
+          git pull --rebase
+          git push
