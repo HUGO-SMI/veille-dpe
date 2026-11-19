@@ -158,6 +158,8 @@ def carte_autour(a):
         if prix and photos_de(n): return n
     return None
 
+DIAG = [0]
+
 def extraire(html, source, recu_le):
     racine = dom(html)
     annonces, vus = [], set()
@@ -169,6 +171,14 @@ def extraire(html, source, recu_le):
         if carte is None or id(carte) in vus: continue
         vus.add(id(carte))
         txt = carte.texte()
+        if os.environ.get("PIGE_DIAG") and source == "seloger" and DIAG[0] < 3:
+            DIAG[0] += 1
+            print("=== DIAG carte SeLoger", DIAG[0], "| balise", carte.tag)
+            for i in carte.tous("img"): print("  img", taille_img(i), i.attrs.get("src", "")[:110], "| alt:", (i.attrs.get("alt") or "")[:30])
+            for n in [carte] + [x for t in ("td", "div", "a", "table") for x in carte.tous(t)]:
+                st = n.attrs.get("style", "") + " " + n.attrs.get("background", "")
+                if "url(" in st or n.attrs.get("background"): print("  fond", n.tag, re.findall(r"url\(([^)]{0,110})", st) or n.attrs.get("background", "")[:110])
+            for l in txt.splitlines()[:14]: print("  |", l[:100])
         prix = RE_PRIX.search(txt)
         if not prix: continue
         lignes = txt.split("\n")
