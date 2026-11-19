@@ -1,6 +1,6 @@
 {
  "version": 2,
- "maj": "2026-11-19T17:40:08.896021+00:00",
+ "maj": "2026-11-19T23:37:47.682066+00:00",
  "communes": [
   "Monteux",
   "Althen-des-Paluds",
@@ -12,6 +12,28 @@
   "Sarrians"
  ],
  "annonces": [
+  {
+   "source": "SeLoger",
+   "type": "Maison",
+   "titre": "Vente Mas 16 pièces",
+   "prix": 1080000,
+   "prix_m2": 3224,
+   "pieces": 16,
+   "chambres": null,
+   "surface": 335,
+   "terrain": 21545,
+   "ville": "Pernes-les-Fontaines",
+   "cp": "84210",
+   "quartier": "",
+   "exclusivite": false,
+   "vendeur": "",
+   "lien": "https://www.seloger.com/annonce/achat/provence-alpes-cote-d-azur/vaucluse-84/pernes-les-fontaines-84210/26FZNH1GJHE3?utm_source=crm-b2c&utm_medium=email&utm_campaign=ali_seeker_sl_b2c_emailing_relaxed-alertwl-buy_x_x_france_x_x_x_fr_x_email_x_x&utm_content=adbutton&utm_term=1_1",
+   "recu_le": "2026-11-19T20:21:17+00:00",
+   "id": "p-20ad335387a954",
+   "photo": "https://cdnihddipa.cloudimg.io/3/7/8/8/3788706b-5e60-418a-8fb1-d87806f43f13.jpg?ci_seal=b0498125db39cad42a53be1a9413530846b413c6&h=400&w=540",
+   "zone": true,
+   "vu_le": "2026-11-19T23:37:47.681839+00:00"
+  },
   {
    "source": "Bien'ici",
    "type": "Appartement",
