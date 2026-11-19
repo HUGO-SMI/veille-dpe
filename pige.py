@@ -21,6 +21,7 @@ ICI = os.path.dirname(os.path.abspath(__file__))
 SORTIE = os.path.join(ICI, "docs", "pige.json")
 JOURS_SCAN = 30          # profondeur de lecture des mails à chaque passage
 JOURS_HISTORIQUE = 180   # durée de conservation des annonces dans la pige
+VERSION = 2              # change si le format des identifiants change (la pige repart de zéro)
 
 SOURCES = {"seloger": "SeLoger", "bienici": "Bien'ici", "leboncoin": "LeBonCoin"}
 
@@ -95,7 +96,22 @@ def nombre(s):
 
 def est_logo(src, alt):
     s = (src + " " + (alt or "")).lower()
-    return any(k in s for k in ("logo", "icon", "picto", "pixel", "tracking", "spacer", "social", "facebook", "instagram", "appstore", "googleplay", "arrow", "fleche", "badge", "1x1"))
+    return any(k in s for k in ("logo", "icon", "picto", "pixel", "tracking", "spacer", "social", "facebook", "instagram", "appstore",
+        "googleplay", "arrow", "fleche", "badge", "1x1", "transparent", "/static/emails", "blank.gif", "avatar"))
+
+def taille_img(i):
+    """Largeur annoncée de l'image (attribut width ou style), 0 si inconnue."""
+    w = i.attrs.get("width") or ""
+    m = re.search(r"width\s*:\s*(\d+)", i.attrs.get("style", "")) or re.search(r"(\d+)", str(w))
+    return int(m.group(1)) if m else 0
+
+def photos_de(carte):
+    imgs = [i for i in carte.tous("img") if i.attrs.get("src", "").startswith("http") and not est_logo(i.attrs.get("src", ""), i.attrs.get("alt"))]
+    imgs = [i for i in imgs if not (0 < taille_img(i) < 90)]
+    imgs.sort(key=lambda i: -taille_img(i))
+    return [i.attrs["src"] for i in imgs]
+
+TITRES_PARASITES = re.compile(r"(annonce|alerte|bonjour|mails?\b|s[ée]lectionn|recherche|d[ée]sinscri|newsletter|param[eè]tr|trop de|vous int[ée]ress|d[ée]couvrez|t[ée]l[ée]charg|application)", re.I)
 
 def deviner_type(txt):
     t = norm(txt)
@@ -125,43 +141,40 @@ def lien_reel(url):
     except Exception:
         return url
 
-def identifiant(source, url, cle_secours):
-    m = re.search(r"seloger\.com/annonces/.*?/(\d{6,})", url) or re.search(r"bienici\.com/annonce/[^/]+/[^/?]*?([\w-]{6,})(?:\?|$)", url) \
-        or re.search(r"leboncoin\.fr/(?:ad/[^/]+|ventes_immobilieres)/(\d{6,})", url)
-    base = m.group(1) if m else cle_secours
-    return source[:2] + "-" + hashlib.sha1(base.encode()).hexdigest()[:12]
+def identifiant(prix, surface, cp, pieces, lien):
+    """Même bien = même prix + surface + code postal + pièces (évite les doublons d'un mail à l'autre et entre sites)."""
+    base = f"{prix}|{surface}|{cp}|{pieces}" if prix and surface else lien
+    return "p-" + hashlib.sha1(base.encode()).hexdigest()[:14]
 
 def carte_autour(a):
-    """Remonte depuis le lien jusqu'au bloc qui contient une photo et un prix (la « carte » de l'annonce)."""
+    """Remonte depuis « Voir l'annonce » jusqu'au plus petit bloc qui contient une photo et un seul prix."""
     n = a
     for _ in range(14):
         n = n.parent
         if n is None or n.tag == "racine": return None
         txt = n.texte()
-        imgs = [i for i in n.tous("img") if not est_logo(i.attrs.get("src", ""), i.attrs.get("alt"))]
-        if imgs and RE_PRIX.search(txt):
-            # bloc trop grand (plusieurs annonces) : on s'arrête au niveau précédent
-            if len(RE_PRIX.findall(txt)) > 2: return None
-            return n
+        prix = set(RE_PRIX.findall(txt))
+        if len(prix) > 1: return None          # on a dépassé la carte : plusieurs annonces
+        if prix and photos_de(n): return n
     return None
 
 def extraire(html, source, recu_le):
     racine = dom(html)
     annonces, vus = [], set()
-    for a in racine.tous("a"):
-        href = a.attrs.get("href", "")
-        lib = norm(a.texte()) + " " + norm(a.attrs.get("title", ""))
-        if not href.startswith("http"): continue
-        if not (any(norm(m) in lib for m in MOTS_LIEN) or a.tous("img")): continue
-        carte = carte_autour(a)
+    for ancre in racine.tous("a"):
+        href = ancre.attrs.get("href", "")
+        lib = norm(ancre.texte()) + " " + norm(ancre.attrs.get("title", ""))
+        if not href.startswith("http") or not any(norm(m) in lib for m in MOTS_LIEN): continue
+        carte = carte_autour(ancre)
         if carte is None or id(carte) in vus: continue
         vus.add(id(carte))
         txt = carte.texte()
         prix = RE_PRIX.search(txt)
         if not prix: continue
-        imgs = [i.attrs.get("src", "") for i in carte.tous("img") if not est_logo(i.attrs.get("src", ""), i.attrs.get("alt"))]
         lignes = txt.split("\n")
-        titre = next((l for l in lignes if len(l) > 12 and not RE_PRIX.search(l) and "€" not in l and not l.lower().startswith(("voir", "contacter", "localisation", "exclusivit", "nouveau"))), "")
+        titre = next((l for l in lignes if len(l) > 8 and "€" not in l and not TITRES_PARASITES.search(l)
+                      and not l.lower().startswith(("voir", "contacter", "localisation", "exclusivit", "nouveau", "baisse", "coup de"))
+                      and not RE_VILLE_CP.search(l) and not re.fullmatch(r"\d{5}\s.*", l)), "")
         m2 = [nombre(x.split(",")[0]) for x in RE_M2.findall(txt)]
         cp = ville = quartier = ""
         mv = RE_VILLE_CP.search(txt)
@@ -177,29 +190,33 @@ def extraire(html, source, recu_le):
         lien = lien_reel(href)
         vendeur = ""
         for l in lignes:
-            if re.search(r"\b(agence|immobili[eè]re?|immo|notaire|particulier|properties|realty)\b", l, re.I) and len(l) < 60 and "€" not in l:
+            if re.search(r"\b(agence|immobili[eè]re?|immo|notaire|particulier|properties|realty|century|laforet|laforêt|orpi|guy hoquet|iad|safti|capifrance|era)\b", l, re.I) \
+               and len(l) < 60 and "€" not in l and not TITRES_PARASITES.search(l):
                 vendeur = l; break
         pm2 = RE_PRIX_M2.search(txt)
-        annonces.append({
-            "id": identifiant(source, lien, (titre + prix.group(1) + ville).lower()),
+        pieces = nombre(RE_PIECES.search(txt).group(1)) if RE_PIECES.search(txt) else None
+        an = {
             "source": SOURCES.get(source, source),
-            "type": deviner_type(titre + " " + txt[:200]),
+            "type": deviner_type(titre + " " + " ".join(l for l in lignes if not TITRES_PARASITES.search(l))[:300]),
             "titre": titre[:140],
             "prix": nombre(prix.group(1)),
             "prix_m2": nombre(pm2.group(1)) if pm2 else None,
-            "pieces": nombre(RE_PIECES.search(txt).group(1)) if RE_PIECES.search(txt) else None,
+            "pieces": pieces,
             "chambres": nombre(RE_CHAMBRES.search(txt).group(1)) if RE_CHAMBRES.search(txt) else None,
             "surface": m2[0] if m2 else None,
             "terrain": m2[1] if len(m2) > 1 else None,
             "ville": ville, "cp": cp, "quartier": quartier,
             "exclusivite": bool(re.search(r"exclusivit", txt, re.I)),
             "vendeur": vendeur,
-            "photo": imgs[0] if imgs else "",
+            "_photos": photos_de(carte),
             "lien": lien,
             "recu_le": recu_le,
-        })
-        a = annonces[-1]
-        if not a["prix_m2"] and a["prix"] and a["surface"]: a["prix_m2"] = round(a["prix"] / a["surface"])
+        }
+        an["id"] = identifiant(an["prix"], an["surface"], cp, pieces, lien)
+        if not an["prix_m2"] and an["prix"] and an["surface"]: an["prix_m2"] = round(an["prix"] / an["surface"])
+        if not an["titre"]:
+            an["titre"] = " ".join(x for x in [an["type"] if an["type"] != "Autre" else "Bien", f"{pieces} pièces" if pieces else "", f"{an['surface']} m²" if an["surface"] else ""] if x)
+        annonces.append(an)
     return annonces
 
 def source_du_mail(msg):
@@ -246,7 +263,8 @@ def main():
     communes = charger_communes()
     zone = {norm(c) for c in communes}
     try:
-        with open(SORTIE, encoding="utf-8") as f: ancien = {a["id"]: a for a in json.load(f).get("annonces", [])}
+        with open(SORTIE, encoding="utf-8") as f: d = json.load(f)
+        ancien = {a["id"]: a for a in d.get("annonces", [])} if d.get("version") == VERSION else {}
     except Exception:
         ancien = {}
 
@@ -259,11 +277,22 @@ def main():
             print("IMAP_USER / IMAP_PASS non configurés : rien à lire."); return
         mails = lire_boite(user, pwd)
 
-    nouvelles = 0
+    lues = []
     for msg in mails:
         src = source_du_mail(msg)
-        if not src: continue
-        for a in extraire(html_du_mail(msg), src, date_du_mail(msg)):
+        if src: lues += extraire(html_du_mail(msg), src, date_du_mail(msg))
+
+    # une image qui revient dans plusieurs annonces différentes = logo / bandeau, pas la photo du bien
+    freq = {}
+    for a in lues:
+        for p in set(a["_photos"]): freq.setdefault(p, set()).add(a["id"])
+    nom_officiel = {norm(c): c for c in communes}
+    for a in lues:
+        a["photo"] = next((p for p in a.pop("_photos") if len(freq.get(p, ())) < 3), "")
+        a["ville"] = nom_officiel.get(norm(a["ville"]), a["ville"])
+
+    nouvelles = 0
+    for a in sorted(lues, key=lambda x: x["recu_le"]):
             a["zone"] = norm(a["ville"]) in zone
             if a["id"] in ancien:
                 prix_avant = ancien[a["id"]].get("prix")
@@ -281,7 +310,7 @@ def main():
     annonces = sorted((a for a in ancien.values() if a.get("recu_le", "") >= limite), key=lambda a: a.get("recu_le", ""), reverse=True)
     os.makedirs(os.path.dirname(SORTIE), exist_ok=True)
     with open(SORTIE, "w", encoding="utf-8") as f:
-        json.dump({"maj": datetime.now(timezone.utc).isoformat(), "communes": communes, "annonces": annonces}, f, ensure_ascii=False, indent=1)
+        json.dump({"version": VERSION, "maj": datetime.now(timezone.utc).isoformat(), "communes": communes, "annonces": annonces}, f, ensure_ascii=False, indent=1)
     print(f"{nouvelles} nouvelle(s) annonce(s) · {len(annonces)} au total dans la pige · {sum(1 for a in annonces if a.get('zone'))} dans la zone")
 
 if __name__ == "__main__":
