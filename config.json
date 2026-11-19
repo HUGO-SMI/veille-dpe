@@ -1,0 +1,11 @@
+{
+  "communes": {
+    "84080": "Monteux",
+    "84001": "Althen-des-Paluds",
+    "84067": "Loriol-du-Comtat",
+    "84088": "Pernes-les-Fontaines",
+    "84043": "Entraigues-sur-la-Sorgue"
+  },
+  "jours_a_scanner": 30,
+  "jours_historique_page": 365
+}
