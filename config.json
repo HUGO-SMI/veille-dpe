@@ -4,7 +4,10 @@
     "84001": "Althen-des-Paluds",
     "84067": "Loriol-du-Comtat",
     "84088": "Pernes-les-Fontaines",
-    "84043": "Entraigues-sur-la-Sorgue"
+    "84043": "Entraigues-sur-la-Sorgue",
+    "84004": "Aubignan",
+    "84012": "Beaumes-de-Venise",
+    "84122": "Sarrians"
   },
   "jours_a_scanner": 30,
   "jours_historique_page": 365
