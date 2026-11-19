@@ -105,11 +105,20 @@ def taille_img(i):
     m = re.search(r"width\s*:\s*(\d+)", i.attrs.get("style", "")) or re.search(r"(\d+)", str(w))
     return int(m.group(1)) if m else 0
 
+RE_FOND = re.compile(r"url\(\s*['\"]?(https?://[^'\")\s]+)")
+
 def photos_de(carte):
+    fonds = []
+    for n in [carte] + [x for t in ("td", "div", "a", "table", "span") for x in carte.tous(t)]:
+        fonds += RE_FOND.findall(n.attrs.get("style", ""))
+        if n.attrs.get("background", "").startswith("http"): fonds.append(n.attrs["background"])
     imgs = [i for i in carte.tous("img") if i.attrs.get("src", "").startswith("http") and not est_logo(i.attrs.get("src", ""), i.attrs.get("alt"))]
     imgs = [i for i in imgs if not (0 < taille_img(i) < 90)]
     imgs.sort(key=lambda i: -taille_img(i))
-    return [i.attrs["src"] for i in imgs]
+    vus, res = set(), []
+    for u in [f for f in fonds if not est_logo(f, "")] + [i.attrs["src"] for i in imgs]:
+        if u not in vus: vus.add(u); res.append(u)
+    return res
 
 TITRES_PARASITES = re.compile(r"(annonce|alerte|bonjour|mails?\b|s[ée]lectionn|recherche|d[ée]sinscri|newsletter|param[eè]tr|trop de|vous int[ée]ress|d[ée]couvrez|t[ée]l[ée]charg|application)", re.I)
 
@@ -158,8 +167,6 @@ def carte_autour(a):
         if prix and photos_de(n): return n
     return None
 
-DIAG = [0]
-
 def extraire(html, source, recu_le):
     racine = dom(html)
     annonces, vus = [], set()
@@ -170,15 +177,7 @@ def extraire(html, source, recu_le):
         carte = carte_autour(ancre)
         if carte is None or id(carte) in vus: continue
         vus.add(id(carte))
-        txt = carte.texte()
-        if os.environ.get("PIGE_DIAG") and source == "seloger" and DIAG[0] < 3:
-            DIAG[0] += 1
-            print("=== DIAG carte SeLoger", DIAG[0], "| balise", carte.tag)
-            for i in carte.tous("img"): print("  img", taille_img(i), i.attrs.get("src", "")[:110], "| alt:", (i.attrs.get("alt") or "")[:30])
-            for n in [carte] + [x for t in ("td", "div", "a", "table") for x in carte.tous(t)]:
-                st = n.attrs.get("style", "") + " " + n.attrs.get("background", "")
-                if "url(" in st or n.attrs.get("background"): print("  fond", n.tag, re.findall(r"url\(([^)]{0,110})", st) or n.attrs.get("background", "")[:110])
-            for l in txt.splitlines()[:14]: print("  |", l[:100])
+        txt = re.sub(r"\n\s*\((\d{5})\)", r" (\1)", carte.texte())  # « Monteux » + « (84170) » sur deux lignes
         prix = RE_PRIX.search(txt)
         if not prix: continue
         lignes = txt.split("\n")

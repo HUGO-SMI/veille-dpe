@@ -24,7 +24,6 @@ jobs:
         env:
           IMAP_USER: ${{ secrets.IMAP_USER }}
           IMAP_PASS: ${{ secrets.IMAP_PASS }}
-          PIGE_DIAG: "1"
         run: python pige.py
       - name: Publier la pige
         run: |
