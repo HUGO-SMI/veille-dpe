@@ -18,7 +18,7 @@ from urllib.parse import urlparse, parse_qs, unquote
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 
 ICI = os.path.dirname(os.path.abspath(__file__))
-SORTIE = os.path.join(ICI, "docs", "pige.json")
+SORTIE = os.environ.get("PIGE_SORTIE") or os.path.join(ICI, "docs", "pige.json")  # PIGE_SORTIE : fichier de test
 JOURS_SCAN = 30          # profondeur de lecture des mails à chaque passage
 JOURS_HISTORIQUE = 180   # durée de conservation des annonces dans la pige
 VERSION = 2              # change si le format des identifiants change (la pige repart de zéro)
