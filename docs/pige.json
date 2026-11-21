@@ -1,6 +1,6 @@
 {
  "version": 2,
- "maj": "2026-11-21T13:30:13.340481+00:00",
+ "maj": "2026-11-21T20:34:26.258366+00:00",
  "communes": [
   "Monteux",
   "Althen-des-Paluds",
@@ -12,6 +12,28 @@
   "Sarrians"
  ],
  "annonces": [
+  {
+   "source": "SeLoger",
+   "type": "Maison",
+   "titre": "Maison de campagne avec 2 logements, piscine et ja...",
+   "prix": 441000,
+   "prix_m2": 3551,
+   "pieces": 8,
+   "chambres": null,
+   "surface": 124,
+   "terrain": 1212,
+   "ville": "Loriol-du-Comtat",
+   "cp": "84870",
+   "quartier": "",
+   "exclusivite": false,
+   "vendeur": "",
+   "lien": "https://www.seloger.com/annonce/achat/provence-alpes-cote-d-azur/vaucluse-84/loriol-du-comtat-84870/26A7HKNLCFC8?utm_source=crm-b2c&utm_medium=email&utm_campaign=ali_seeker_sl_b2c_emailing_relaxed-alertwl-buy_x_x_france_x_x_x_fr_x_email_x_x&utm_content=adbutton&utm_term=1_1",
+   "recu_le": "2026-11-21T17:10:19+00:00",
+   "id": "p-62fc29b1bdfa7e",
+   "photo": "https://cdnihddipa.cloudimg.io/3/7/a/8/37a81462-202a-44c3-8709-3ef1eada979e.jpg?ci_seal=ff9d915bb05c6196e875ef5ab67433148fbcc225&h=400&w=540",
+   "zone": true,
+   "vu_le": "2026-11-21T20:34:26.258194+00:00"
+  },
   {
    "source": "Bien'ici",
    "type": "Appartement",
