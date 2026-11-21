@@ -1,6 +1,6 @@
 {
  "version": 2,
- "maj": "2026-11-20T21:51:01.806159+00:00",
+ "maj": "2026-11-21T13:30:13.340481+00:00",
  "communes": [
   "Monteux",
   "Althen-des-Paluds",
@@ -12,6 +12,50 @@
   "Sarrians"
  ],
  "annonces": [
+  {
+   "source": "Bien'ici",
+   "type": "Appartement",
+   "titre": "Appartement 2 pièces 55 m²",
+   "prix": 119000,
+   "prix_m2": 2164,
+   "pieces": 2,
+   "chambres": null,
+   "surface": 55,
+   "terrain": null,
+   "ville": "Monteux",
+   "cp": "84170",
+   "quartier": "",
+   "exclusivite": true,
+   "vendeur": "",
+   "lien": "https://link.bienici.com/lnk/AVsAAKjW-IQAAc28NfgAAQfGmrUAARpdxNUAAAAAAAfAswBrAWosMfIiNq5DRU2R6P_GB1y9UAAHYd4/7/xYIDU6ojQe3-rUwTstTnnQ/aHR0cHM6Ly93d3cuYmllbmljaS5jb20vYW5ub25jZS9pbW1vLWZhY2lsZS02MTc2NDI0Mz9mcm9tU2F2ZWRTZWFyY2hJZD04MmU5MjNkZDAwNmJiMGNjNzI1NjNkYmQ3OTAxMDA2OGY1MTkyN2YxYzgwNmFiZjg0ZmUzYjk3NTllYTZkOWU0JmF0X2NhbmFsPUNSTSZhdF9tZWRpdW09YWxlcnRlcyZhdF9jYW1wYWlnbj1zZWFyY2hfYWxlcnQmYXRfbGluaz1Wb2lyX0Fubm9uY2UmYXRfaWRfY29tcHRlPTY4ZTNkODQ5ZjM1ZWZlMDBiZWJiYjc3NyZhdF90eXBlX2VtYWlsaW5nPWVtYWlsX2F1dG8mYXRfdmFyaWFudD1uZXdfZGVzaWduJnNpZ25lZFJlY2lwaWVudD1leUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKbGJXRnBiQ0k2SW1oMVoyOXNZV3hoYm1SbExuTnRhVUJuYldGcGJDNWpiMjBpTENKcFlYUWlPakUzT1RVeU5UUTRNamQ5LkxJNmxqeGNxc1hpMDZXZGJPclg0YlRyS3hQVUR4ZDl2eTlxVE1lVC1EYW8",
+   "recu_le": "2026-11-21T09:53:47+00:00",
+   "id": "p-b5449caa2917b5",
+   "photo": "https://file.bienici.com/photo/immo-facile-61764243_media.immo-facile.com_office12_gnimmo_stebas_immobilier_catalog_images_pr_p_6_1_7_6_4_2_4_3_61764243a.jpg_DATEMAJ_21_11_2026-09_22_57?width=200&height=160&fit=cover",
+   "zone": true,
+   "vu_le": "2026-11-21T13:30:13.340127+00:00"
+  },
+  {
+   "source": "Bien'ici",
+   "type": "Appartement",
+   "titre": "Appartement 2 pièces 33 m²",
+   "prix": 95000,
+   "prix_m2": 2879,
+   "pieces": 2,
+   "chambres": null,
+   "surface": 33,
+   "terrain": null,
+   "ville": "Aubignan",
+   "cp": "84810",
+   "quartier": "",
+   "exclusivite": true,
+   "vendeur": "",
+   "lien": "https://link.bienici.com/lnk/AMcAAKmol4kAAc28NfgAAQfGmrUAARpdxNUAAAAAAAfAswBrANfRVcZwwm6CQ2yjazS7LPKkdgAHYd4/7/hNF_mJ8SRuQkWV7p45e_WA/aHR0cHM6Ly93d3cuYmllbmljaS5jb20vYW5ub25jZS9kci1ob3VzZS1pbW1vLTEtMTE0ODAzMT9mcm9tU2F2ZWRTZWFyY2hJZD1kNGJlZmI1MTVmOWViMDkxYmRlZWM5ZDRkNjMxNzdiZDRiYmJiYzNhOTBlZWQxNWZiNjRiNWMzMGQ5ODBjZmVmJmF0X2NhbmFsPUNSTSZhdF9tZWRpdW09YWxlcnRlcyZhdF9jYW1wYWlnbj1zZWFyY2hfYWxlcnQmYXRfbGluaz1Wb2lyX0Fubm9uY2UmYXRfaWRfY29tcHRlPTY4ZTNkODQ5ZjM1ZWZlMDBiZWJiYjc3NyZhdF90eXBlX2VtYWlsaW5nPWVtYWlsX2F1dG8mYXRfdmFyaWFudD1uZXdfZGVzaWduJnNpZ25lZFJlY2lwaWVudD1leUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKbGJXRnBiQ0k2SW1oMVoyOXNZV3hoYm1SbExuTnRhVUJuYldGcGJDNWpiMjBpTENKcFlYUWlPakUzT1RVeU1UY3pOakI5LktUb0RnNEVhUnY0eU45ZUVxWGEtMFVTNnpGemg2UzV3NHJzUkpmRXhZZEk",
+   "recu_le": "2026-11-20T23:29:20+00:00",
+   "id": "p-10f9cac251b79c",
+   "photo": "https://file.bienici.com/photo/dr-house-immo-1-1148031_images.drhouse-immo.com_images_full_HD_filigrane_5_bandeau_6_5_1_vente_148031_6.jpg_1795164457?width=200&height=160&fit=cover",
+   "zone": true,
+   "vu_le": "2026-11-21T13:30:13.340102+00:00"
+  },
   {
    "source": "Bien'ici",
    "type": "Maison",
