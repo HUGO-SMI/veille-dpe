@@ -1,6 +1,6 @@
 {
  "version": 2,
- "maj": "2026-11-22T13:24:47.468872+00:00",
+ "maj": "2026-11-22T20:45:23.183401+00:00",
  "communes": [
   "Monteux",
   "Althen-des-Paluds",
@@ -12,6 +12,28 @@
   "Sarrians"
  ],
  "annonces": [
+  {
+   "source": "Bien'ici",
+   "type": "Maison",
+   "titre": "Maison 6 pièces 159 m²",
+   "prix": 599000,
+   "prix_m2": 3767,
+   "pieces": 6,
+   "chambres": null,
+   "surface": 159,
+   "terrain": null,
+   "ville": "Aubignan",
+   "cp": "84810",
+   "quartier": "",
+   "exclusivite": false,
+   "vendeur": "",
+   "lien": "https://link.bienici.com/lnk/AW0AAKsIWxQAAc28NfgAAQfGmrUAARpdxNUAAAAAAAfAswBrAz0glgUqJcl1TyCCB1ASTrKs3gAHYd4/7/whgCPgA2RFlBtp37vUKy-g/aHR0cHM6Ly93d3cuYmllbmljaS5jb20vYW5ub25jZS9ndXktaG9xdWV0LTE4LUdUMDA2NS0xODc5P2Zyb21TYXZlZFNlYXJjaElkPWQ0YmVmYjUxNWY5ZWIwOTFiZGVlYzlkNGQ2MzE3N2JkNGJiYmJjM2E5MGVlZDE1ZmI2NGI1YzMwZDk4MGNmZWYmYXRfY2FuYWw9Q1JNJmF0X21lZGl1bT1hbGVydGVzJmF0X2NhbXBhaWduPXNlYXJjaF9hbGVydCZhdF9saW5rPVZvaXJfQW5ub25jZSZhdF9pZF9jb21wdGU9NjhlM2Q4NDlmMzVlZmUwMGJlYmJiNzc3JmF0X3R5cGVfZW1haWxpbmc9ZW1haWxfYXV0byZhdF92YXJpYW50PW5ld19kZXNpZ24mc2lnbmVkUmVjaXBpZW50PWV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpsYldGcGJDSTZJbWgxWjI5c1lXeGhibVJsTG5OdGFVQm5iV0ZwYkM1amIyMGlMQ0pwWVhRaU9qRTNPVFV6TnpRek5qZDkuOXhNTVRZUkNkd0RaeVppTlZaLWlnTXpqM2ltUG5fdzZfRjZzdWJIRVpDWQ",
+   "recu_le": "2026-11-22T19:06:07+00:00",
+   "id": "p-fb7963bfb828d2",
+   "photo": "https://file.bienici.com/photo/guy-hoquet-18-GT0065-1879_d2m2j20yzublln.cloudfront.net_700_1010166_09620f6e-ddb6-4f39-8b3a-fbbc39481320.jpg?width=200&height=160&fit=cover",
+   "zone": true,
+   "vu_le": "2026-11-22T20:45:23.183096+00:00"
+  },
   {
    "source": "SeLoger",
    "type": "Maison",
