@@ -2,11 +2,16 @@ name: Veille DPE
 
 on:
   schedule:
-    - cron: "0 6 * * *"   # 7h heure de Paris en hiver (8h en été)
-  workflow_dispatch: {}    # bouton "Run workflow" pour lancer à la main
+    - cron: "0 6-20 * * *"   # toutes les heures de 7h à 21h (heure de Paris en hiver, 8h-22h en été)
+  workflow_dispatch: {}      # bouton "Run workflow" pour lancer à la main
 
 permissions:
   contents: write
+
+# un seul passage à la fois (évite deux mails pour les mêmes DPE)
+concurrency:
+  group: veille-dpe
+  cancel-in-progress: false
 
 jobs:
   veille:
@@ -16,16 +21,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # Le mail récap ne part que s'il y a de nouveaux DPE (voir veille_dpe.py)
       - name: Récupérer les nouveaux DPE et envoyer le mail
         env:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
         run: python veille_dpe.py
-      - name: Sauvegarder l'historique et la page web
+      - name: Sauvegarder l'historique et la page web (seulement s'il y a du nouveau)
         run: |
           git config user.name "veille-dpe-bot"
           git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet -- data; then
+            echo "Aucun nouveau DPE : rien à publier."
+            exit 0
+          fi
           git add data docs
-          git diff --cached --quiet || git commit -m "Veille DPE $(date +%F)"
-          git push
+          git commit -m "Veille DPE $(date -u +'%F %H:%M')"
+          # le robot des piges publie aussi dans ce dépôt : on se remet à jour avant d'envoyer
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
