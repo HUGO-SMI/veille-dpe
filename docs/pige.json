@@ -1,6 +1,6 @@
 {
  "version": 2,
- "maj": "2026-11-25T00:47:01.629473+00:00",
+ "maj": "2026-11-25T19:38:04.246637+00:00",
  "communes": [
   "Monteux",
   "Althen-des-Paluds",
@@ -12,6 +12,28 @@
   "Sarrians"
  ],
  "annonces": [
+  {
+   "source": "Bien'ici",
+   "type": "Maison",
+   "titre": "Maison 5 pièces 92 m²",
+   "prix": 134400,
+   "prix_m2": 1461,
+   "pieces": 5,
+   "chambres": null,
+   "surface": 92,
+   "terrain": null,
+   "ville": "Sarrians",
+   "cp": "84260",
+   "quartier": "",
+   "exclusivite": false,
+   "vendeur": "",
+   "lien": "https://link.bienici.com/lnk/AUsAAKmT0dUAAc28NfgAAQfGmrUAARpdxNUAAAAAAAfAswBrBtyAoRIO9X-DSUegzXDGsDkffwAHYd4/7/lNySgCB4P9XHpBkKTfdLoQ/aHR0cHM6Ly93d3cuYmllbmljaS5jb20vYW5ub25jZS9pbW1vLWZhY2lsZS02MTc5MjEwND9mcm9tU2F2ZWRTZWFyY2hJZD1kNGJlZmI1MTVmOWViMDkxYmRlZWM5ZDRkNjMxNzdiZDRiYmJiYzNhOTBlZWQxNWZiNjRiNWMzMGQ5ODBjZmVmJmF0X2NhbmFsPUNSTSZhdF9tZWRpdW09YWxlcnRlcyZhdF9jYW1wYWlnbj1zZWFyY2hfYWxlcnQmYXRfbGluaz1Wb2lyX0Fubm9uY2UmYXRfaWRfY29tcHRlPTY4ZTNkODQ5ZjM1ZWZlMDBiZWJiYjc3NyZhdF90eXBlX2VtYWlsaW5nPWVtYWlsX2F1dG8mYXRfdmFyaWFudD1uZXdfZGVzaWduJnNpZ25lZFJlY2lwaWVudD1leUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKbGJXRnBiQ0k2SW1oMVoyOXNZV3hoYm1SbExuTnRhVUJuYldGcGJDNWpiMjBpTENKcFlYUWlPakUzT1RVMk1URTNOelY5LkE5cGw4UklEY1U2MHJNRHhEMmpqbUNlalI0b09CRFV0T1ZmdFhJWFhncUE",
+   "recu_le": "2026-11-25T13:02:55+00:00",
+   "id": "p-640896ecab6e2e",
+   "photo": "https://file.bienici.com/photo/immo-facile-61792104_media.immo-facile.com_office12_gnimmo_stebas_immobilier_catalog_images_pr_p_6_1_7_9_2_1_0_4_61792104a.jpg_DATEMAJ_25_11_2026-10_10_12?width=200&height=160&fit=cover",
+   "zone": true,
+   "vu_le": "2026-11-25T19:38:04.246273+00:00"
+  },
   {
    "source": "Bien'ici",
    "type": "Maison",
