@@ -1,6 +1,6 @@
 {
  "version": 2,
- "maj": "2026-11-26T14:45:47.605312+00:00",
+ "maj": "2026-11-26T23:23:47.955342+00:00",
  "communes": [
   "Monteux",
   "Althen-des-Paluds",
@@ -87,7 +87,7 @@
    "pieces": 6,
    "chambres": null,
    "surface": 185,
-   "terrain": null,
+   "terrain": 700,
    "ville": "Monteux",
    "cp": "84170",
    "quartier": "",
