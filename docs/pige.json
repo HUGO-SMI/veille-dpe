@@ -1,6 +1,6 @@
 {
  "version": 2,
- "maj": "2026-11-27T14:46:02.076986+00:00",
+ "maj": "2026-11-27T23:00:47.427106+00:00",
  "communes": [
   "Monteux",
   "Althen-des-Paluds",
@@ -12,6 +12,28 @@
   "Sarrians"
  ],
  "annonces": [
+  {
+   "source": "SeLoger",
+   "type": "Maison",
+   "titre": "Vente Maison/villa 4 pièces",
+   "prix": 315000,
+   "prix_m2": 3150,
+   "pieces": 4,
+   "chambres": null,
+   "surface": 100,
+   "terrain": 1000,
+   "ville": "Monteux",
+   "cp": "84170",
+   "quartier": "",
+   "exclusivite": false,
+   "vendeur": "",
+   "lien": "https://www.seloger.com/annonce/achat/provence-alpes-cote-d-azur/vaucluse-84/monteux-84170/26VLYYQH6L74?utm_source=crm-b2c&utm_medium=email&utm_campaign=ali_seeker_sl_b2c_emailing_resend-alertwl-buy_x_x_france_x_x_x_fr_x_email_x_x&utm_content=adbutton&utm_term=1_1&ssa_id=7bf5ea5e-312f-4d5d-bb31-3535467b622d",
+   "recu_le": "2026-11-27T20:43:47+00:00",
+   "id": "p-049bdc227d4741",
+   "photo": "https://cdnihddipa.cloudimg.io/f/9/c/0/f9c03e05-1525-4186-b49d-7717406d29b1.jpg?ci_seal=8b1f84a5f25df0f8c002ab76fd9210269e6e922e&h=370&w=500",
+   "zone": true,
+   "vu_le": "2026-11-27T23:00:47.426659+00:00"
+  },
   {
    "source": "Bien'ici",
    "type": "Maison",
